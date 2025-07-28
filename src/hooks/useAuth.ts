@@ -24,6 +24,29 @@ export const useAuthProvider = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Initialize with demo users
+    const demoUsers = [
+      {
+        id: 'admin',
+        name: 'Admin User',
+        email: 'admin@travel.com',
+        password: 'password',
+        isAdmin: true
+      },
+      {
+        id: 'user',
+        name: 'John Doe',
+        email: 'user@example.com',
+        password: 'password',
+        isAdmin: false
+      }
+    ];
+    
+    const existingUsers = localStorage.getItem('users');
+    if (!existingUsers) {
+      localStorage.setItem('users', JSON.stringify(demoUsers));
+    }
+    
     // Check for existing user session
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
