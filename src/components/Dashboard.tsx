@@ -16,13 +16,31 @@ export const Dashboard: React.FC = () => {
   
   const [activeTab, setActiveTab] = useState('search');
   const [searchResults, setSearchResults] = useState<Trip[]>([]);
-  const [searchPerformed, setSearchPerformed] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(true);
 
   const userBookings = getUserBookings(user?.id || '');
 
+  // Load all trips when component mounts
+  React.useEffect(() => {
+    const loadAllTrips = async () => {
+      const allTrips = await searchTrips({
+        source: '',
+        destination: '',
+        date: '',
+        mode: ''
+      });
+      setSearchResults(allTrips);
+    };
+    
+    if (activeTab === 'search') {
+      loadAllTrips();
+    }
+  }, [activeTab, searchTrips]);
   const handleSearch = async (params: any) => {
     setSearchPerformed(true);
-    return await searchTrips(params);
+    const results = await searchTrips(params);
+    setSearchResults(results);
+    return results;
   };
 
   const handleBookTrip = async (tripId: string) => {
@@ -117,8 +135,8 @@ export const Dashboard: React.FC = () => {
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-6">
                   {searchResults.length > 0 
-                    ? `Found ${searchResults.length} trip${searchResults.length !== 1 ? 's' : ''}`
-                    : 'No trips found for your search criteria'
+                    ? `${searchResults.length} trip${searchResults.length !== 1 ? 's' : ''} available`
+                    : 'No trips available'
                   }
                 </h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

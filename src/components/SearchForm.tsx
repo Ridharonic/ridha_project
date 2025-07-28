@@ -16,6 +16,23 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, onResults, isL
     mode: ''
   });
 
+  const handleClearSearch = async () => {
+    setSearchParams({
+      source: '',
+      destination: '',
+      date: '',
+      mode: ''
+    });
+    
+    // Show all trips when clearing search
+    const results = await onSearch({
+      source: '',
+      destination: '',
+      date: '',
+      mode: ''
+    });
+    onResults(results);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const results = await onSearch(searchParams);
@@ -126,6 +143,15 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, onResults, isL
             <Search className="w-5 h-5 mr-2" />
           )}
           {isLoading ? 'Searching...' : 'Search Trips'}
+        </button>
+        
+        <button
+          type="button"
+          onClick={handleClearSearch}
+          disabled={isLoading}
+          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Show All Trips
         </button>
       </form>
     </div>
